@@ -1,11 +1,11 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-const path = require("path");
 
 const deps = require("./package.json").dependencies;
+
 module.exports = {
   output: {
-    publicPath: "http://localhost:3000/",
+    publicPath: "http://localhost:4000/",
   },
 
   resolve: {
@@ -13,14 +13,7 @@ module.exports = {
   },
 
   devServer: {
-    contentBase: path.join(__dirname, "public"),
-    port: 3000,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers":
-        "X-Requested-With, content-type, Authorization",
-    },
+    port: 4000,
   },
 
   module: {
@@ -48,16 +41,12 @@ module.exports = {
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "base_project",
+      name: "hostreact",
       filename: "remoteEntry.js",
-      remotes: {},
-      exposes: {
-        "./Cart": "./src/components/Cart/Cart",
-        "./Products": "./src/components/Products/Products",
-        "./TopSellers": "./src/components/TopSellers/TopSellers",
-        "./Header": "./src/components/Header/Header",
-        "./redux-store": "./src/redux-store",
+      remotes: {
+        base_project: "base_project@http://localhost:3000/remoteEntry.js",
       },
+      exposes: {},
       shared: {
         ...deps,
         react: {
